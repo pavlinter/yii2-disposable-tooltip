@@ -1,0 +1,28 @@
+{
+    "name": "pavlinter/yii2-disposable-tooltip",
+    "description": "Widget creates disposable tooltips",
+    "keywords": ["yii2", "tooltip", "disposable"],
+    "type": "yii2-extension",
+    "license": "BSD 3-Clause",
+    "support": {
+        "issues": "https://github.com/pavlinter/yii2-disposable-tooltip/issues?state=open",
+        "source": "https://github.com/pavlinter/yii2-disposable-tooltip"
+    },
+    "authors": [
+        {
+            "name": "Pavels Radajevs",
+            "email": "pavlinter@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "yiisoft/yii2": "*",
+        "yiisoft/yii2-bootstrap": "*",
+        "pavlinter/yii2-dot-translation": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "pavlinter\\": ""
+        }
+    }
+}
