@@ -6,63 +6,54 @@
  * @version 1.0.0
  */
 
-namespace pavlinter\tooltip;
+namespace pavlinter\tooltip\controllers;
 
-use Yii;
-use yii\base\Action;
-use yii\base\InvalidConfigException;
+use yii\web\Controller;
 use yii\db\Query;
-use yii\helpers\Url;
-use yii\helpers\Html;
+use yii\filters\VerbFilter;
+use Yii;
 use yii\web\Response;
 
 
-
-class HintAction extends Action
+/**
+ * Class DefaultController
+ * @package pavlinter\tooltip\controllers
+ */
+class DefaultController extends Controller
 {
+    public $defaultAction = 'add-hint';
     /**
-     * @var string the name of the tooltips table.
+     * @inheritdoc
      */
-    public $userTooltipTable = '{{%user_tooltip}}';
-    /**
-     * @var string the cookie key.
-     */
-    public $cookieName = 'user_tooltip';
-    /**
-     * @var string the type of storage for the hint configuration
-     */
-    public $storage = 'auto';
-    /**
-     * Initializes the action.
-     * @throws InvalidConfigException if the font file does not exist.
-     */
-    public function init()
+    public function behaviors()
     {
-
+        return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'index' => ['post'],
+                ],
+            ],
+        ];
     }
     /**
-     * Runs the action.
+     * @return array
      */
-    public function run()
+    public function actionAddHint()
     {
-
-        if (!Yii::$app->request->isAjax || !Yii::$app->request->isPost) {
-            return;
-        }
-
         Yii::$app->response->format = Response::FORMAT_JSON;
 
         $id = (int)Yii::$app->request->post('id');
 
-        if (Yii::$app->user->isGuest || $this->storage === 'cookie') {
-            $tooltips = Yii::$app->request->cookies->getValue($this->cookieName);
+        if (Yii::$app->user->isGuest || $this->module->storage === 'cookie') {
+            $tooltips = Yii::$app->request->cookies->getValue($this->module->cookieName);
             if (!is_array($tooltips)) {
                 $tooltips = [];
             }
 
             if (!isset($tooltips[$id])) {
                 $tooltips[$id] = 1;
-                $options['name'] = $this->cookieName;
+                $options['name'] = $this->module->cookieName;
                 $options['value'] = $tooltips;
                 $options['expire'] = time()+86400*365;
                 $cookie = new \yii\web\Cookie($options);
@@ -71,13 +62,13 @@ class HintAction extends Action
 
         } else {
             $query = new Query();
-            $res = $query->from($this->userTooltipTable)->where([
+            $res = $query->from($this->module->userTooltipTable)->where([
                 'id_user' => Yii::$app->getUser()->getId(),
                 'id_source_message' => $id,
             ])->exists();
 
             if (!$res) {
-                Yii::$app->db->createCommand()->insert($this->userTooltipTable, [
+                Yii::$app->db->createCommand()->insert($this->module->userTooltipTable, [
                     'id_user' => Yii::$app->getUser()->getId(),
                     'id_source_message' => $id,
                 ])->execute();

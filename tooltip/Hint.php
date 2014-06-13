@@ -23,21 +23,18 @@ class Hint extends \yii\base\Widget
 {
     const TYPE_AUTO = 'auto';
     const TYPE_COOKIE = 'cookie';
-
+    /**
+     * @var boolean flag to loaded common js.
+     */
     public static $loaded = false;
+    /**
+     * @var boolean flag to loaded common js.
+     */
     public static $showBg = false;
     /**
-     * @var string the name of the tooltips table.
+     * @var string the module id.
      */
-    public $userTooltipTable = '{{%user_tooltip}}';
-    /**
-     * @var string the cookie key.
-     */
-    public $cookieName = 'user_tooltip';
-    /**
-     * @var string the type of storage for the hint configuration
-     */
-    public $storage     = 'auto';
+    public $moduleId = 'distooltip';
     /**
      * @var string tag a round content
      */
@@ -47,9 +44,20 @@ class Hint extends \yii\base\Widget
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = [];
-
+    /**
+     * @var string message category.
+     * @see \Yii::t(category,message,params)
+     */
     public $category    = null;
+    /**
+     * @var string message key.
+     * @see \Yii::t(category,message,params)
+     */
     public $message     = null;
+    /**
+     * @var array params.
+     * @see \Yii::t(category,message,params)
+     */
     public $params      = [];
     /**
      * @var array the options for the js.
@@ -79,20 +87,24 @@ class Hint extends \yii\base\Widget
      * @var string the title for popover.
      */
     public $title    = '';
-    public $sourceMessageTable = '{{%source_message}}';
-    public $router             = 'site/disposable-hint';
     /**
      * @var string the content for popover.
      */
     public $content            = null;
-
-    private $messageId  = false;
+    /**
+     * @var interger id from database.
+     */
+    private $_messageId  = false;
+    /**
+     * @var object module [[\pavlinter\tooltip\Module]].
+     */
+    private $_module     = null;
     /**
      * Initializes the component by configuring the default message categories.
      */
     public function init()
     {
-        parent::init();
+        $this->_module = Yii::$app->getModule($this->moduleId);
 
 
         if (empty($this->category)) {
@@ -104,15 +116,15 @@ class Hint extends \yii\base\Widget
 
         $view = $this->getView();
         $message = Yii::t($this->category,$this->message,$this->params);
-        $this->messageId = Yii::$app->i18n->getMessageId($this->category,$this->message);
+        $this->_messageId = Yii::$app->i18n->getMessageId($this->category,$this->message);
 
         //insert if not exist message
-        if ($this->messageId === false && $this->sourceMessageTable) {
-            $command = Yii::$app->db->createCommand()->insert($this->sourceMessageTable,[
+        if ($this->_messageId === false && $this->_module->sourceMessageTable) {
+            $command = Yii::$app->db->createCommand()->insert($this->_module->sourceMessageTable,[
                 'category' => $this->category,
                 'message'  => $this->message,
             ])->execute();
-            $this->messageId = Yii::$app->db->lastInsertID;
+            $this->_messageId = Yii::$app->db->lastInsertID;
         }
 
         if ($this->read()) {
@@ -126,7 +138,7 @@ class Hint extends \yii\base\Widget
         Html::addCssClass($this->closeButton,'disposable-hint-btn');
         $this->closeButton['href'] = 'javascript:void(0);';
         $this->closeButton['data-trigger'] = '#' . $this->options['id'];
-        $this->options['data-id'] = $this->messageId;
+        $this->options['data-id'] = $this->_messageId;
 
         //javascript clientOptions
         $this->clientOptions = ArrayHelper::merge([
@@ -256,7 +268,7 @@ class Hint extends \yii\base\Widget
                             return false;
                         }
                         $.ajax({
-                            url: "' . Url::to([$this->router]) . '",
+                            url: "' . Url::to([$this->moduleId]) . '",
                             type: "POST",
                             dataType: "json",
                             data: {id:id},
@@ -317,26 +329,26 @@ class Hint extends \yii\base\Widget
     {
         static $dataCookie;
         static $dataDb;
-        if (Yii::$app->user->isGuest || $this->storage === 'cookie') {
+        if (Yii::$app->user->isGuest || $this->_module->storage === self::TYPE_COOKIE) {
             if ($dataCookie === null) {
-                $tooltips = Yii::$app->request->cookies->getValue($this->cookieName);
+                $tooltips = Yii::$app->request->cookies->getValue($this->_module->cookieName);
                 if (!is_array($tooltips)) {
                     $tooltips = [];
                 }
                 $dataCookie = $tooltips;
             }
 
-            if (isset($dataCookie[$this->messageId])) {
+            if (isset($dataCookie[$this->_messageId])) {
                 return true;
             }
         } else {
             if ($dataDb === null) {
                 $query = new Query();
-                $dataDb = $query->from($this->userTooltipTable)->select(['id_source_message'])->where([
+                $dataDb = $query->from($this->_module->userTooltipTable)->select(['id_source_message'])->where([
                     'id_user' => Yii::$app->getUser()->getId(),
                 ])->indexBy('id_source_message')->all();
             }
-            if (isset($dataDb[$this->messageId])) {
+            if (isset($dataDb[$this->_messageId])) {
                 return true;
             }
         }
