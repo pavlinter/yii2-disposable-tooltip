@@ -9,13 +9,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist pavlinter/yii2-disposable-tooltip "dev-master"
+php composer.phar require --prefer-dist pavlinter/yii2-disposable-tooltip "master"
 ```
 
 or add
 
 ```
-"pavlinter/pavlinter/yii2-disposable-tooltip": "dev-master"
+"pavlinter/pavlinter/yii2-disposable-tooltip": "master"
 ```
 
 to the require section of your `composer.json` file.
