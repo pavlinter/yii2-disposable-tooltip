@@ -1,7 +1,5 @@
-Yii2 Dot Trasnlation
+Yii2 Disposable Tooltip
 ======================
-
-![Screen Shot](https://github.com/pavlinter/yii2-dot-translation/blob/master/screenshot.png?raw=true)
 
 Installation
 ------------
@@ -11,13 +9,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist pavlinter/yii2-dot-translation "dev-master"
+php composer.phar require --prefer-dist pavlinter/yii2-disposable-tooltip "dev-master"
 ```
 
 or add
 
 ```
-"pavlinter/yii2-dot-translation": "dev-master"
+"pavlinter/pavlinter/yii2-disposable-tooltip": "dev-master"
 ```
 
 to the require section of your `composer.json` file.
