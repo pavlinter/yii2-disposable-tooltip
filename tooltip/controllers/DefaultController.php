@@ -8,12 +8,12 @@
 
 namespace pavlinter\tooltip\controllers;
 
+use pavlinter\tooltip\Hint;
 use yii\web\Controller;
 use yii\db\Query;
 use yii\filters\VerbFilter;
 use Yii;
 use yii\web\Response;
-
 
 /**
  * Class DefaultController
@@ -37,7 +37,7 @@ class DefaultController extends Controller
         ];
     }
     /**
-     * @return array
+     * @inheritdoc
      */
     public function actionAddHint()
     {
@@ -45,7 +45,7 @@ class DefaultController extends Controller
 
         $id = (int)Yii::$app->request->post('id');
 
-        if (Yii::$app->user->isGuest || $this->module->storage === 'cookie') {
+        if (Yii::$app->user->isGuest || $this->module->storage === Hint::TYPE_COOKIE) {
             $tooltips = Yii::$app->request->cookies->getValue($this->module->cookieName);
             if (!is_array($tooltips)) {
                 $tooltips = [];

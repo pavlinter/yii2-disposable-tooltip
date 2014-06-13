@@ -10,8 +10,10 @@ namespace pavlinter\tooltip;
 
 class Module extends \yii\base\Module
 {
+    /**
+     * @var string path controllers
+     */
     public $controllerNamespace = 'pavlinter\tooltip\controllers';
-
     /**
     * @var string the name of the tooltips table.
     */
@@ -27,12 +29,10 @@ class Module extends \yii\base\Module
     /**
      * @var string the type of storage for the hint configuration
      */
-    public $storage     = 'auto';
+    public $storage = Hint::TYPE_AUTO;
 
     public function init()
     {
         parent::init();
-
-        // custom initialization code goes here
     }
 }

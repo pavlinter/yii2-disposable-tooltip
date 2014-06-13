@@ -18,7 +18,6 @@ use yii\base\InvalidConfigException;
 use yii\bootstrap\BootstrapPluginAsset;
 use yii\web\JsExpression;
 
-
 class Hint extends \yii\base\Widget
 {
     const TYPE_AUTO = 'auto';
@@ -38,7 +37,7 @@ class Hint extends \yii\base\Widget
     /**
      * @var string tag a round content
      */
-    public $tag         = 'span';
+    public $tag = 'span';
     /**
      * @var array the HTML attributes for the widget container tag.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
@@ -48,17 +47,17 @@ class Hint extends \yii\base\Widget
      * @var string message category.
      * @see \Yii::t(category,message,params)
      */
-    public $category    = null;
+    public $category = null;
     /**
      * @var string message key.
      * @see \Yii::t(category,message,params)
      */
-    public $message     = null;
+    public $message = null;
     /**
      * @var array params.
      * @see \Yii::t(category,message,params)
      */
-    public $params      = [];
+    public $params = [];
     /**
      * @var array the options for the js.
      */
@@ -86,26 +85,25 @@ class Hint extends \yii\base\Widget
     /**
      * @var string the title for popover.
      */
-    public $title    = '';
+    public $title = '';
     /**
      * @var string the content for popover.
      */
-    public $content            = null;
+    public $content = null;
     /**
      * @var interger id from database.
      */
-    private $_messageId  = false;
+    private $_messageId = false;
     /**
      * @var object module [[\pavlinter\tooltip\Module]].
      */
-    private $_module     = null;
+    private $_module = null;
     /**
      * Initializes the component by configuring the default message categories.
      */
     public function init()
     {
         $this->_module = Yii::$app->getModule($this->moduleId);
-
 
         if (empty($this->category)) {
             throw new InvalidConfigException('The "category" property must be set.');
@@ -155,16 +153,6 @@ class Hint extends \yii\base\Widget
         $this->clientOptions['title']       = $this->getTitle();
         $this->clientOptions['trigger']     = 'manual';
 
-
-        $this->clientEvents = [
-            'dhint.ajaxBeforeSend' => 'function(e,$cont,id){
-                console.log(e);
-                console.log($cont);
-                console.log(id);
-            }',
-        ];
-
-
         if ($this->content === null) {
             $this->content = function ($message,$btn) {
                 return $btn.$message;
@@ -177,11 +165,8 @@ class Hint extends \yii\base\Widget
             $this->clientOptions['content'] = $message;
         }
 
-
         echo Html::beginTag($this->tag,$this->options);
         $this->registerAssets($view);
-
-
 
     }
     public function run()
@@ -205,7 +190,6 @@ class Hint extends \yii\base\Widget
         ],$scrollOptions);
         $id = $this->options['id'];
 
-
         $script = '$("#'.$id.'").popover(' . Json::encode($this->clientOptions) . ')
                         .on("hidden.bs.popover", function () {
                                 if(disposableHintQueue.length && ' . ($queue?1:0) . '){
@@ -216,9 +200,8 @@ class Hint extends \yii\base\Widget
                                 }
                         });';
 
-
         foreach ($this->clientEvents as $event => $handler) {
-            $script .= '$("#'.$id.'").on("dhint.' . $event . '" ,' . new JsExpression($handler) . ')';
+            $script .= '$("#'.$id.'").on("dhint.' . $event . '" ,' . new JsExpression($handler) . ');';
         }
 
         if ($queue) {
@@ -232,7 +215,6 @@ class Hint extends \yii\base\Widget
         }
         $view->registerJs($script);
 
-
         if (self::$showBg === false && $showBg) {
             $view->on($view::EVENT_END_BODY, function ($event) {
                 echo Html::tag('div','',[
@@ -241,7 +223,6 @@ class Hint extends \yii\base\Widget
             });
             self::$showBg = true;
         }
-
 
         if (self::$loaded === false) {
             $script = '';
@@ -259,7 +240,6 @@ class Hint extends \yii\base\Widget
                 ';
             }
 
-
             $script .= '
                 $(document).on("click",".disposable-hint-btn",function(){
                         var $cont = $($(this).attr("data-trigger"));
@@ -268,7 +248,7 @@ class Hint extends \yii\base\Widget
                             return false;
                         }
                         $.ajax({
-                            url: "' . Url::to([$this->moduleId]) . '",
+                            url: "' . Url::to(['/'.$this->moduleId]) . '",
                             type: "POST",
                             dataType: "json",
                             data: {id:id},
@@ -292,9 +272,7 @@ class Hint extends \yii\base\Widget
 
             ';
 
-
             $view->registerJs($script);
-
             $view->registerJs('
                 var disposableHintQueue = [];
                 var disposableHintScrollTo = function($next){
@@ -354,5 +332,4 @@ class Hint extends \yii\base\Widget
         }
         return false;
     }
-
 }
