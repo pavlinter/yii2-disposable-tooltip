@@ -1,6 +1,6 @@
 {
     "name": "pavlinter/yii2-disposable-tooltip",
-    "description": "Widget creates disposable tooltips",
+    "description": "Yii2: Widget creates disposable tooltips",
     "keywords": ["yii2", "tooltip", "disposable"],
     "type": "yii2-extension",
     "license": "BSD 3-Clause",
