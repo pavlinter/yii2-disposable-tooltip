@@ -201,7 +201,7 @@ class Hint extends \yii\base\Widget
                         });';
 
         foreach ($this->clientEvents as $event => $handler) {
-            $script .= '$("#'.$id.'").on("dhint.' . $event . '" ,' . new JsExpression($handler) . ');';
+            $script .= '$("#'.$id.'").on("' . $event . '" ,' . new JsExpression($handler) . ');';
         }
 
         if ($queue) {
