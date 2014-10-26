@@ -63,14 +63,14 @@ class DefaultController extends Controller
         } else {
             $query = new Query();
             $res = $query->from($this->module->userTooltipTable)->where([
-                'id_user' => Yii::$app->getUser()->getId(),
-                'id_source_message' => $id,
+                'user_id' => Yii::$app->getUser()->getId(),
+                'source_message_id' => $id,
             ])->exists();
 
             if (!$res) {
                 Yii::$app->db->createCommand()->insert($this->module->userTooltipTable, [
-                    'id_user' => Yii::$app->getUser()->getId(),
-                    'id_source_message' => $id,
+                    'user_id' => Yii::$app->getUser()->getId(),
+                    'source_message_id' => $id,
                 ])->execute();
             }
         }

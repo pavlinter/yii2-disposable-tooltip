@@ -12,11 +12,11 @@ class m140506_181144_user_tooltip extends \yii\db\Migration
         }
 
         $this->createTable('{{%user_tooltip}}', [
-            'id_user' => Schema::TYPE_INTEGER . '(11) NOT NULL',
-            'id_source_message' => Schema::TYPE_INTEGER . '(11) NOT NULL',
+            'user_id' => Schema::TYPE_INTEGER . '(11) NOT NULL',
+            'source_message_id' => Schema::TYPE_INTEGER . '(11) NOT NULL',
         ], $tableOptions);
 
-        $this->addPrimaryKey('PK', '{{%user_tooltip}}', ['id_user' ,'id_source_message']);
+        $this->addPrimaryKey('PK', '{{%user_tooltip}}', ['user_id' ,'source_message_id']);
     }
 
     public function down()

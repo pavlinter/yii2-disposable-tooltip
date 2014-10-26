@@ -322,9 +322,9 @@ class Hint extends \yii\base\Widget
         } else {
             if ($dataDb === null) {
                 $query = new Query();
-                $dataDb = $query->from($this->_module->userTooltipTable)->select(['id_source_message'])->where([
-                    'id_user' => Yii::$app->getUser()->getId(),
-                ])->indexBy('id_source_message')->all();
+                $dataDb = $query->from($this->_module->userTooltipTable)->select(['source_message_id'])->where([
+                    'user_id' => Yii::$app->getUser()->getId(),
+                ])->indexBy('source_message_id')->all();
             }
             if (isset($dataDb[$this->_messageId])) {
                 return true;
