@@ -15,7 +15,7 @@ php composer.phar require --prefer-dist pavlinter/yii2-disposable-tooltip "dev-m
 or add
 
 ```
-"pavlinter/pavlinter/yii2-disposable-tooltip": "dev-master"
+"pavlinter/yii2-disposable-tooltip": "dev-master"
 ```
 
 to the require section of your `composer.json` file.
